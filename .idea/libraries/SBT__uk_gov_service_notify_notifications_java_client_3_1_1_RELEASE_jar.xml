@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: uk.gov.service.notify:notifications-java-client:3.1.1-RELEASE:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/uk.gov.service.notify/notifications-java-client/jars/notifications-java-client-3.1.1-RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/uk.gov.service.notify/notifications-java-client/srcs/notifications-java-client-3.1.1-RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
