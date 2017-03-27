@@ -3,7 +3,7 @@
 delete from application_form_section where section_number = 6;
 delete from application_form_question where key = 'item';
 
-insert into application_form_section values (6,1,6,'contactDetails', '[{"isNumeric": false, "maxWords": 20, "type": "contact", "name": "contactDetails"}]','form');
+insert into application_form_section values (6,1,6,'Contact Details', '[{"isNumeric": false, "maxWords": 20, "type": "contact", "name": "contactDetails"}]','form');
 insert into application_form_section values (7,1,7,'Access needs', '[{"maxWords":500,"type":"textArea","name":"accessNeeds"}]','form');
 insert into application_form_section values (8,1,8,'Funds received previously', '[{"maxWords":500,"type":"textArea","name":"fundsReceived"}]','form');
 
