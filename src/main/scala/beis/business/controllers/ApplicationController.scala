@@ -17,7 +17,7 @@
 
 package beis.business.controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Named}
 
 import cats.data.OptionT
 import cats.instances.future._
@@ -100,7 +100,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     val mgrEmail = emailConfig.dummymanager
 
     val fs = Seq(
-      ("Manager", notifications.notifyPortfolioManager(submissionRef, from, to)),
+      ("Manager", notifications.notifyManagerAppSubmitted(submissionRef, from, to)),
       ("Applicant", notifications.notifyApplicant(submissionRef, DateTime.now(DateTimeZone.UTC), from, to, mgrEmail))
     ).map {
       case (who, f) => f.recover { case t =>

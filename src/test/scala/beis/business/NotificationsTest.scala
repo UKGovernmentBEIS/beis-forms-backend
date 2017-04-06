@@ -25,7 +25,7 @@ import play.api.libs.json.{JsObject, JsString}
 import play.api.libs.mailer.{Email, MailerClient}
 import beis.business.data.ApplicationDetails
 import beis.business.models._
-import beis.business.notifications.EmailNotifications
+import beis.business.notifications.NotificationServicePlayImpl
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +37,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
   "notification" should {
 
     "return no notification ID for a missing application ID" in {
-      val notification = new EmailNotifications(new DummyMailer(""), new DummyGatherDetailsAndSect(Future.successful(None), Future.successful(None)), oppNotFoundOps)
+      val notification = new NotificationServicePlayImpl(new DummyMailer(""), new DummyGatherDetailsAndSect(Future.successful(None), Future.successful(None)), oppNotFoundOps)
 
       val res1 = notification.notifyPortfolioManager(dummyAppId, "from", "to")
       res1.futureValue shouldBe None
@@ -47,13 +47,13 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
     }
 
     "return no notification ID for a missing opportunity ID" in {
-      val notification = new EmailNotifications(new DummyMailer(""), new DummyGatherDetailsAndSect(Future.successful(None), Future.successful(None)), oppNotFoundOps)
+      val notification = new NotificationServicePlayImpl(new DummyMailer(""), new DummyGatherDetailsAndSect(Future.successful(None), Future.successful(None)), oppNotFoundOps)
       val res1 = notification.notifyManager(OpportunityId(123), "from", "to")
       res1.futureValue shouldBe None
     }
 
     "return no notification ID for missing details section" in {
-      val notification = new EmailNotifications(new DummyMailer(""),
+      val notification = new NotificationServicePlayImpl(new DummyMailer(""),
         new DummyGatherDetailsAndSect(appOps.gatherDetails(dummyAppId), Future.successful(None)),
         oppNotFoundOps)
       val res = notification.notifyApplicant(dummyAppId, DateTime.now(DateTimeZone.UTC), "from", "to", "mgr@")
@@ -64,15 +64,15 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
       val MAIL_ID = "yey"
       val sender = new DummyMailer(MAIL_ID)
 
-      val notificationMgr = new EmailNotifications(sender, appOps, oppNotFoundOps)
+      val notificationMgr = new NotificationServicePlayImpl(sender, appOps, oppNotFoundOps)
       val res1 = notificationMgr.notifyPortfolioManager(dummyAppId, "from", "to")
       res1.futureValue.value.id shouldBe MAIL_ID
 
-      val notificationAppl = new EmailNotifications(sender, appOpsAndSection, oppNotFoundOps)
+      val notificationAppl = new NotificationServicePlayImpl(sender, appOpsAndSection, oppNotFoundOps)
       val res2 = notificationAppl.notifyApplicant(dummyAppId, DateTime.now(DateTimeZone.UTC), "from@", "to@", "mgr@")
       res2.futureValue.value.id shouldBe MAIL_ID
 
-      val oppNotify = new EmailNotifications(sender, appOps, oppOps)
+      val oppNotify = new NotificationServicePlayImpl(sender, appOps, oppOps)
       val res3 = oppNotify.notifyManager(dummyOppId, "from@", "to@")
       res3.futureValue.value.id shouldBe MAIL_ID
     }
@@ -80,15 +80,15 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
     "return error if e-mailer throws" in {
       val sender = new DummyMailer(throw new RuntimeException())
 
-      val notificationMgr = new EmailNotifications(sender, appOps, oppNotFoundOps)
+      val notificationMgr = new NotificationServicePlayImpl(sender, appOps, oppNotFoundOps)
       val res1 = notificationMgr.notifyPortfolioManager(dummyAppId, "from", "to")
       whenReady(res1.failed) { ex => ex shouldBe a[RuntimeException] }
 
-      val notificationAppl = new EmailNotifications(sender, appOpsAndSection, oppNotFoundOps)
+      val notificationAppl = new NotificationServicePlayImpl(sender, appOpsAndSection, oppNotFoundOps)
       val res2 = notificationAppl.notifyApplicant(dummyAppId, DateTime.now(DateTimeZone.UTC), "from@", "to@", "mgr@")
       whenReady(res2.failed) { ex => ex shouldBe a[RuntimeException] }
 
-      val oppNotify = new EmailNotifications(sender, appOps, oppOps)
+      val oppNotify = new NotificationServicePlayImpl(sender, appOps, oppOps)
       val res3 = oppNotify.notifyManager(dummyOppId, "from@", "to@")
       whenReady(res3.failed) { ex => ex shouldBe a[RuntimeException] }
     }

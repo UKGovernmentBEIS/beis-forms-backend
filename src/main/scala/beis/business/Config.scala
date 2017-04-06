@@ -21,7 +21,10 @@ case class Config(beis: BEISConfig)
 
 case class BEISConfig(email: EmailConfig)
 
-case class EmailConfig(dummyapplicant: String, replyto: String, dummymanager: String)
+case class NotifyConfig(apikey: String, applicanttemplateid: String, manageroppsubmittedtemplateid: String,
+                        manageropppublishedtemplateid: String, workflowtesttemplateid: String)
+
+case class EmailConfig(dummyapplicant: String, replyto: String, dummymanager: String, notifyservice: NotifyConfig, mode: String)
 
 object Config {
 

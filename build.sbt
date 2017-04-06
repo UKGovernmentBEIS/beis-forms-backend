@@ -27,6 +27,8 @@ val slickpgDependencies = Seq(
   "com.github.tminglei" %% "slick-pg_joda-time" % SLICK_PG_VERSION
 )
 
+resolvers += Resolver.bintrayRepo("gov-uk-notify", "maven")
+
 libraryDependencies ++= Seq(
   "com.wellfactored" %% "play-bindings" % "2.0.0",
   "com.wellfactored" %% "slick-gen" % "0.0.4",
@@ -39,6 +41,7 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.9.6",
   "org.joda" % "joda-convert" % "1.8.1",
   "org.typelevel" %% "cats-core" % "0.8.1",
+  "uk.gov.service.notify" % "notifications-java-client" % "3.1.1-RELEASE",
 
   "org.scalatest" %% "scalatest" % "2.2.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test)

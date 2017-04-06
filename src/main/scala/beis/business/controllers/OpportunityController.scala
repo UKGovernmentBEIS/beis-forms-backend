@@ -17,7 +17,7 @@
 
 package beis.business.controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Named}
 
 import play.api.Logger
 import play.api.libs.json.Json
@@ -57,7 +57,7 @@ class OpportunityController @Inject()(opportunities: OpportunityOps,
       case None => opportunities.publish(id).flatMap {
         case Some(d) =>
           val mgrMail = emailConfig.dummymanager
-          notifications.notifyManager(id, emailConfig.replyto, mgrMail).
+          notifications.notifyManagerAppPublished(id, emailConfig.replyto, mgrMail).
             map { em =>
               if (em.isEmpty) Logger.warn("Failed to find the published opportunity")
             }.recover {
