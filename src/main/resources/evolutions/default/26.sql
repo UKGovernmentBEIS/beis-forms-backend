@@ -1,5 +1,7 @@
 # --- !Ups
 
+update "application_form_section" set "fields" = '[{"isNumeric":false,"maxWords":20,"type":"companyName","name":"companyName"}]' where "section_number" = 1;
+
 update "application_form_section" set "fields" = '[{"maxWords":500,"type":"address","name":"companyAddress"}]' where "section_number" = 4;
 
 update "opportunity" set title = 'Big Energy Saving Network 2016-2017', value = 5000 where title = 'Exploring innovation seminars';
