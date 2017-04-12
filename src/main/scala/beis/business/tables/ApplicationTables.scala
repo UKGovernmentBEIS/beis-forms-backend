@@ -134,24 +134,19 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
         Future.successful(1)
       }
       case Some((app, None)) =>
-        println("JJJJJJJJJ:-" + app)
         db.run(applicationSectionTable += ApplicationSectionRow(ApplicationSectionId(0), id, sectionNumber, answers, completedAt))
       case None => Future.successful(0)
     }
   }
 
-
   override def saveFileSection(id: ApplicationId, sectionNumber: Int, answers: JsObject, completedAt: Option[DateTime] = None): Future[Int] = {
-    println("in saveFileSection:-" + answers)
     fetchAppWithSection(id, sectionNumber).flatMap {
       case Some((app, Some(section))) => if (areDifferent(section.answers, answers) || completedAt.isDefined) {
-        println("UUUUUUU:-" + app)
         db.run(appSectionC(id, sectionNumber).update(section.copy(answers = answers, completedAt = completedAt)))
       } else {
         Future.successful(1)
       }
       case Some((app, None)) => {
-        println("HHHHHHHH:-" + app)
         db.run(applicationSectionTable += ApplicationSectionRow(ApplicationSectionId(0), id, sectionNumber, answers, completedAt))
       }
       case None => Future.successful(0)

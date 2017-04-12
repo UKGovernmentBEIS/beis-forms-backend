@@ -18,10 +18,10 @@ ALTER TABLE "section" ALTER column "id" SET DEFAULT NEXTVAL('section_id_seq');
 CREATE SEQUENCE applicationform_id_seq START WITH 2;
 ALTER TABLE "application_form" ALTER column "id" SET DEFAULT NEXTVAL('applicationform_id_seq');
 
-CREATE SEQUENCE applicationformsection_id_seq START WITH 9;
+CREATE SEQUENCE applicationformsection_id_seq START WITH 8;
 ALTER TABLE "application_form_section" ALTER column "id" SET DEFAULT NEXTVAL('applicationformsection_id_seq');
 
-CREATE SEQUENCE applicationformquestion_id_seq START WITH 9;
+CREATE SEQUENCE applicationformquestion_id_seq START WITH 8;
 ALTER TABLE "application_form_question" ALTER column "id" SET DEFAULT NEXTVAL('applicationformquestion_id_seq');
 
 # --- !Downs
@@ -40,7 +40,7 @@ delete from application_form where id > 1;
 
 ALTER TABLE "application_form_section" ALTER column "id" SET DEFAULT null;
 drop sequence "applicationformsection_id_seq";
-delete from application_form_section where id > 6;
+delete from application_form_section where id > 7;
 
 ALTER TABLE "application_form_question" ALTER column "id" SET DEFAULT null;
 drop sequence "applicationformquestion_id_seq";

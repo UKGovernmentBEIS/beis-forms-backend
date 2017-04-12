@@ -51,7 +51,7 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
       val applicantFirstName = "Eric"
 
       Map[String, String](
-        "companyName" -> "Company",
+        "companyInfo" -> "Company",
         "companieshouseidentifier" -> "65675757",
         "applicantTitle" -> "Mr",
         "applicantFirstName" -> applicantFirstName,
@@ -84,10 +84,9 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
       val title = appSection.answers.value.get("title").map(_.toString).getOrElse("")
       val reviewDeadline = submittedAt.plusDays(beis.business.models.APP_REVIEW_TIME_DAYS)
       val params =  emailbodyParams(details.form, details.opp, title, reviewDeadline)
-      EmailId(client.sendEmail(applicantTemplateid, "farhan.ghalib@beis.gov.uk", params, "").getNotificationId.toString)
+      EmailId(client.sendEmail(applicantTemplateid, to /*"farhan.ghalib@beis.gov.uk"*/ , params, "").getNotificationId.toString)
     }).value
   }
-
 
   def sendEmail(to: String, templateid: String, params: Map[String, String])(implicit ec: ExecutionContext): Future[SendEmailResponse] = {
     import Config.config.beis.{email => emailConfig}
