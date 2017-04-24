@@ -41,7 +41,6 @@ class AppSectionController @Inject()(applications: ApplicationOps,
     Action.async(applications.fetchSection(id, sectionNumber).map(jsonResult(_)))
 
   def sectionDetail(id: ApplicationId, sectionNumber: Int) = Action.async {
-    println("hereee")
     val ft = for {
       a <- OptionT(applications.application(id))
       f <- OptionT(appForms.byId(a.applicationFormId))
@@ -56,7 +55,6 @@ class AppSectionController @Inject()(applications: ApplicationOps,
         fs,
         a.sections.find(_.sectionNumber == sectionNumber))
     }
-    println("hereee" + ft.value)
 
     ft.value.map(jsonResult(_))
   }

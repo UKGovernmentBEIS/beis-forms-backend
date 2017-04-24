@@ -22,8 +22,12 @@ import play.api.libs.json.JsObject
 
 case class ApplicationId(id: Long)
 
+case class UserId(userId: String)
+
+case class AppStatus(appStatus: String)
+
 case class ApplicationSectionId(id: Long)
 
 case class ApplicationSectionRow(id: ApplicationSectionId, applicationId: ApplicationId, sectionNumber: Int, answers: JsObject, completedAt: Option[DateTime])
 
-case class ApplicationRow(id: ApplicationId, applicationFormId: ApplicationFormId, personalReference: Option[String])
+case class ApplicationRow(id: ApplicationId, applicationFormId: ApplicationFormId, personalReference: Option[String], userId: UserId, appStatus: AppStatus)

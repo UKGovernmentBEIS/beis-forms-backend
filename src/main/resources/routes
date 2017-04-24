@@ -12,6 +12,7 @@ POST          /opportunity/:id/publish                               beis.busine
 POST          /manage/opportunity/:id/description/:sectionNum        beis.business.controllers.OpportunityController.saveDescription(id: OpportunityId, sectionNum:Int)
 
 GET           /application_form/:id                                  beis.business.controllers.ApplicationFormController.byId(id: ApplicationFormId)
+GET           /applications                                          beis.business.controllers.ApplicationController.userApplications
 
 GET           /application_form/:id/application                      beis.business.controllers.ApplicationController.applicationForForm(id: ApplicationFormId)
 

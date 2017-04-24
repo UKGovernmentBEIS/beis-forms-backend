@@ -38,9 +38,11 @@ trait ApplicationOps {
 
   def deleteAll: Future[Unit]
 
-  def forForm(applicationFormId: ApplicationFormId): Future[Option[ApplicationRow]]
+  def forForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]]
 
   def application(applicationId: ApplicationId): Future[Option[Application]]
+
+  def userApplications(userId: Option[UserId]): Future[Set[Application]]
 
   /**
     * @return `Some[ApplicationSectionRow]` if the application with the given `id` was found and it had a

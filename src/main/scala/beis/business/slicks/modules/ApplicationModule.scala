@@ -36,6 +36,10 @@ trait ApplicationModule extends PlayJsonMappers {
 
   implicit def ApplicationIdMapper: BaseColumnType[ApplicationId] = MappedColumnType.base[ApplicationId, Long](_.id, ApplicationId)
 
+  implicit def ApplicationFormUserIdMapper: BaseColumnType[UserId] = MappedColumnType.base[UserId, String](_.userId, UserId)
+
+  implicit def ApplicationFormAppStatusMapper: BaseColumnType[AppStatus] = MappedColumnType.base[AppStatus, String](_.appStatus, AppStatus)
+
   type ApplicationSectionQuery = Query[ApplicationSectionTable, ApplicationSectionRow, Seq]
 
   class ApplicationSectionTable(tag: Tag) extends Table[ApplicationSectionRow](tag, "application_section") {
@@ -67,11 +71,15 @@ trait ApplicationModule extends PlayJsonMappers {
 
     def personalReference = column[Option[String]]("personal_reference", O.Length(255))
 
+    def userId = column[UserId]("user_id", O.Length(50))
+
+    def appStatus = column[AppStatus]("status", O.Length(20))
+
     def applicationFormIdFK = foreignKey("application_application_form_fk", applicationFormId, applicationFormTable)(_.id, onDelete = ForeignKeyAction.Cascade)
 
     def applicationFormIdIndex = index("application_application_form_idx", applicationFormId)
 
-    def * = (id, applicationFormId, personalReference) <> (ApplicationRow.tupled, ApplicationRow.unapply)
+    def * = (id, applicationFormId, personalReference, userId, appStatus) <> (ApplicationRow.tupled, ApplicationRow.unapply)
   }
 
   lazy val applicationTable = TableQuery[ApplicationTable]

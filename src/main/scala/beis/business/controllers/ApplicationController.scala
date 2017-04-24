@@ -28,7 +28,7 @@ import play.api.mvc.{Action, Controller}
 import beis.business.Config
 import beis.business.actions.ApplicationAction
 import beis.business.data.{ApplicationFormOps, ApplicationOps, OpportunityOps}
-import beis.business.models.{ApplicationFormId, ApplicationId, SubmittedApplicationRef}
+import beis.business.models.{ApplicationFormId, ApplicationId, SubmittedApplicationRef, UserId}
 import beis.business.notifications.NotificationService
 import beis.business.restmodels.ApplicationDetail
 
@@ -42,12 +42,22 @@ class ApplicationController @Inject()(applications: ApplicationOps,
                                      (implicit val ec: ExecutionContext) extends Controller with ControllerUtils {
   def byId(id: ApplicationId) = Action.async(applications.byId(id).map(jsonResult(_)))
 
-  def applicationForForm(applicationFormId: ApplicationFormId) = Action.async {
-    applications.forForm(applicationFormId).map(jsonResult(_))
+  def applicationForForm(applicationFormId: ApplicationFormId) = Action.async { implicit request =>
+    val userId = request.headers.get("UserId").getOrElse("")
+
+    applications.forForm(applicationFormId, UserId(userId)).map(jsonResult(_))
   }
 
   def application(applicationId: ApplicationId) =
     Action.async(applications.application(applicationId).map(jsonResult(_)))
+
+  def userApplications = Action.async { implicit request =>
+        val userId = request.headers.get("UserId").getOrElse("")
+        applications.userApplications(Option(UserId(userId))).map {
+        os => ( Ok(Json.toJson(os)))
+      }
+  }
+
 
   def detail(applicationId: ApplicationId) = Action.async {
     val ft = for {

@@ -19,11 +19,11 @@ package beis.business.restmodels
 
 import org.joda.time.DateTime
 import play.api.libs.json.JsObject
-import beis.business.models.{ApplicationFormId, ApplicationId}
+import beis.business.models.{AppStatus, ApplicationFormId, ApplicationId, UserId}
 
 case class ApplicationSection(sectionNumber: Int, answers: JsObject, completedAt: Option[DateTime])
 
-case class Application(id: ApplicationId, applicationFormId: ApplicationFormId, personalReference: Option[String], sections: Seq[ApplicationSection])
+case class Application(id: ApplicationId, applicationFormId: ApplicationFormId, personalReference: Option[String], userId: UserId, appStatus: AppStatus, sections: Seq[ApplicationSection])
 
 case class ApplicationDetail(
                               id: ApplicationId,
