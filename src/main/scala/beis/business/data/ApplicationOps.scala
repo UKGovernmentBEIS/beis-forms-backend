@@ -40,6 +40,8 @@ trait ApplicationOps {
 
   def forForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]]
 
+  def createForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]]
+
   def application(applicationId: ApplicationId): Future[Option[Application]]
 
   def userApplications(userId: Option[UserId]): Future[Set[Application]]

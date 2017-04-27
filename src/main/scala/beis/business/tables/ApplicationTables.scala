@@ -56,13 +56,24 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
   }
 
   override def forForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = {
+    db.run(applicationWithSectionsForFormC(applicationFormId, userId).result).flatMap {
+      case Seq() =>  Future.successful(None)
+      case ps =>
+        val (as, ss) = ps.unzip
+        Future.successful(as.map(a => buildApplicationRow(a, ss.flatten)).headOption)
+    }
+  }
+
+
+  override def createForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = {
     val appFormF = db.run(applicationFormTable.filter(_.id === applicationFormId).result.headOption)
 
     for {
       _ <- OptionT(appFormF)
-      app <- OptionT.liftF(fetchOrCreate(applicationFormId, userId))
-    } yield ApplicationRow(app.id, app.applicationFormId, app.personalReference, app.userId, AppStatus("In progress"))
+      app <- OptionT.liftF(create(applicationFormId, userId))
+    } yield ApplicationRow(app.id, app.applicationFormId, app.personalReference, app.userId, app.appStatus)
   }.value
+
 
   override def application(applicationId: ApplicationId): Future[Option[Application]] = db.run {
     applicationWithSectionsC(applicationId).result
@@ -73,7 +84,7 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
   //override def userApplications(userId: UserId): Future[Set[Application]] = db.run(applicationTableC(userId).result).map { os =>
   override def userApplications(userId: Option[UserId]): Future[Set[Application]] = db.run(applicationTable.filter(_.userId ===userId).result).map { os =>
-    os.map(a => Application(a.id, a.applicationFormId, a.personalReference, a.userId, AppStatus("In progress"), Seq())).toSet
+    os.map(a => Application(a.id, a.applicationFormId, a.personalReference, a.userId, a.appStatus, Seq())).toSet
   }
 
   override def delete(id: ApplicationId): Future[Unit] = db.run {
@@ -101,7 +112,25 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
   val applicationWithSectionsForFormC = Compiled(applicationWithSectionsForFormQ _)
 
   //TODO:- remove UserId Hardcoded value
-  private def fetchOrCreate(applicationFormId: ApplicationFormId, userId: UserId): Future[Application] = {
+  private def fetch(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = {
+    db.run(applicationWithSectionsForFormC(applicationFormId, userId).result).flatMap {
+      case Seq() =>  Future.successful(None)
+      case ps =>
+        val (as, ss) = ps.unzip
+        Future.successful(as.map(a => buildApplicationRow(a, ss.flatten)).headOption)
+    }
+  }
+
+
+  private def buildApplicationRow(app: ApplicationRow, secs: Seq[ApplicationSectionRow]): ApplicationRow = {
+    val sectionOverviews: Seq[ApplicationSection] = secs.map { s =>
+      ApplicationSection(s.sectionNumber, s.answers, s.completedAt)
+    }
+    ApplicationRow(app.id, app.applicationFormId, app.personalReference, app.userId, app.appStatus)
+  }
+
+  //TODO:- remove UserId Hardcoded value
+  private def create(applicationFormId: ApplicationFormId, userId: UserId): Future[Application] = {
     db.run(applicationWithSectionsForFormC(applicationFormId, userId).result).flatMap {
       case Seq() => createApplicationForForm(applicationFormId, userId).map { id => Application(id, applicationFormId, None, userId, AppStatus("In progress"), Seq()) }
       case ps =>
@@ -115,7 +144,7 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
       ApplicationSection(s.sectionNumber, s.answers, s.completedAt)
     }
 
-    Application(app.id, app.applicationFormId, app.personalReference, app.userId, AppStatus("In progress"), sectionOverviews)
+    Application(app.id, app.applicationFormId, app.personalReference, app.userId, app.appStatus, sectionOverviews)
   }
 
 
@@ -189,10 +218,15 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
   override def submit(id: ApplicationId): Future[Option[SubmittedApplicationRef]] = {
     // dummy method
     play.api.Logger.info(s"Dummy application submission for $id")
+    db.run( applicationTable.filter(_.id === id).map(_.appStatus).update(AppStatus("Submitted")))
     byId(id).flatMap(appRow => Future.successful(appRow.map(_.id)))
   }
 
   def appSectionQ(id: Rep[ApplicationId], sectionNumber: Rep[Int]) = applicationSectionTable.filter(a => a.applicationId === id && a.sectionNumber === sectionNumber)
+
+  def appQ(id: Rep[ApplicationId]) = applicationTable.filter(a => a.id === id)
+
+  lazy val appC = Compiled(appQ _)
 
   lazy val appSectionC = Compiled(appSectionQ _)
 

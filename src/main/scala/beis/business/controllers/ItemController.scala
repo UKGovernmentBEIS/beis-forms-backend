@@ -111,15 +111,7 @@ class ItemController @Inject()(applications: ApplicationOps, AppSectionAction: A
         case _ => 0
       }
 
-     // println("CCCCCC:-" +itemNumber)
-
-        //applications.saveFileSection(id, sectionNumber, updated).map(x => jsonResult(findItem(doc, itemNumber)))
       applications.saveFileSection(id, sectionNumber, updated)map(x => Ok(Json.toJson(itemNumber)))
-       // applications.saveFileSection(id, sectionNumber, updated).map(x => x)
-
-      //)
-      //Future.successful(Ok(Json.toJson(itemNumber)))
-
     }
   }
 

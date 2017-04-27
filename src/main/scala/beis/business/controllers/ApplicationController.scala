@@ -48,6 +48,12 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     applications.forForm(applicationFormId, UserId(userId)).map(jsonResult(_))
   }
 
+  def applicationForFormCreate(applicationFormId: ApplicationFormId) = Action.async { implicit request =>
+    val userId = request.headers.get("UserId").getOrElse("")
+
+    applications.createForm(applicationFormId, UserId(userId)).map(jsonResult(_))
+  }
+
   def application(applicationId: ApplicationId) =
     Action.async(applications.application(applicationId).map(jsonResult(_)))
 
@@ -65,7 +71,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
       f <- OptionT(appForms.byId(a.applicationFormId))
       o <- OptionT(opps.opportunity(f.opportunityId))
     } yield {
-      ApplicationDetail(a.id, a.personalReference, f.sections.length, a.sections.count(_.completedAt.isDefined), o.summary, f, a.sections)
+      ApplicationDetail(a.id, a.personalReference, a.appStatus, f.sections.length, a.sections.count(_.completedAt.isDefined), o.summary, f, a.sections)
     }
 
     ft.value.map(jsonResult(_))
