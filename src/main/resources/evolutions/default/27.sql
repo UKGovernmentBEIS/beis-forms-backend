@@ -14,6 +14,9 @@ insert into application_form_question values (7,7,'fundsReceived', 'Has your org
 ALTER TABLE "application" ADD COLUMN "user_id" VARCHAR(50) NOT NULL, ADD COLUMN "status" VARCHAR(20) NOT NULL;
 update "application" set "user_id" = 'testuser', status= 'In progress' where id = 1;
 
+update "application_form_section" set "fields" = '[{"contactitems":[{"name":"contactDetails.telephone","isEnabled":true,"isMandatory":true,"label":"Telephone","maxWords":20,"isNumeric":false,"type":"text"},{"name":"contactDetails.email","isEnabled":true,"isMandatory":true,"label":"Email","maxWords":20,"isNumeric":false,"type":"text"},{"name":"contactDetails.web","isEnabled":true,"isMandatory":false,"label":"Web","maxWords":100,"isNumeric":false,"type":"text"},{"name":"contactDetails.twitter","isEnabled":true,"isMandatory":true,"label":"Twitter","maxWords":20,"isNumeric":false,"type":"text"}],"type":"contact","name":"contactDetails"}]' where id = 5;
+update "application_form_section" set "fields" = '[{"name":"charityNumber","isEnabled":true,"isMandatory":true,"maxWords":20,"isNumeric":false,"type":"text"}]'  where id = 2;
+
 
 # -- !Downs
 
