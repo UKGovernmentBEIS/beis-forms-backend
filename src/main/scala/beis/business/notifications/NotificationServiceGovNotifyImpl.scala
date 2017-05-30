@@ -37,7 +37,7 @@ import scala.collection.JavaConversions._
 
 
 class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applications: ApplicationOps, opportunities: OpportunityOps)
-                                  (implicit ec: ExecutionContext) extends NotificationService {
+                                                (implicit ec: ExecutionContext) extends NotificationService {
 
   import Notifications._
   import play.api.libs.mailer._

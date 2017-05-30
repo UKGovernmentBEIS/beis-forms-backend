@@ -29,7 +29,7 @@ import beis.business.models.{ApplicationFormRow, ApplicationId, OpportunityId, O
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotificationServicePlayImpl @Inject()(sender: MailerClient, applications: ApplicationOps, opportunities: OpportunityOps)
-                                    (implicit ec: ExecutionContext) extends NotificationService {
+                                           (implicit ec: ExecutionContext) extends NotificationService {
 
   import Notifications._
   import play.api.libs.mailer._
