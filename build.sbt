@@ -42,6 +42,8 @@ libraryDependencies ++= Seq(
   "org.joda" % "joda-convert" % "1.8.1",
   "org.typelevel" %% "cats-core" % "0.8.1",
   "uk.gov.service.notify" % "notifications-java-client" % "3.1.1-RELEASE",
+  "org.activiti" % "activiti-engine" % "6.0.0",
+  "eu.timepit" %% "refined" % "0.6.1",
 
   "org.scalatest" %% "scalatest" % "2.2.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test)

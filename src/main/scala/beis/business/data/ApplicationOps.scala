@@ -77,4 +77,6 @@ trait ApplicationOps {
   def submit(id: ApplicationId) : Future[Option[SubmittedApplicationRef]]
 
   def updatePersonalReference(id: ApplicationId, reference: Option[String]): Future[Int]
+
+  def updateAppStatus(id: ApplicationId, appStatus: Option[String]): Future[Int]
 }

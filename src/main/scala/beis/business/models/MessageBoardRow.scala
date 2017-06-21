@@ -22,4 +22,6 @@ import play.api.libs.json.JsObject
 
 case class MessageId(id: Long)
 
-case class MessageRow(id: MessageId, userId: Option[UserId], applicationId: Option[ApplicationId], sectionNumber: Option[Int], sentBy: UserId, sentAt: DateTime, message : Option[String])
+case class MessageRow(id: MessageId, userId: Option[UserId], applicationId: Option[ApplicationId],
+                      sectionNumber: Option[Int], sentBy: UserId, sentAt: DateTime, message : Option[String])
+

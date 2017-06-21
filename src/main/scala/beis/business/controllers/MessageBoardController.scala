@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 import beis.business.data.MessageBoardOps
 import beis.business.models.{ApplicationId, MessageId, UserId}
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{JsObject, _}
 import play.api.mvc.{Action, Controller}
 
@@ -36,6 +37,14 @@ class MessageBoardController @Inject()(messages:MessageBoardOps)
     val userId = request.headers.get("UserId").getOrElse("")
     messages.userMessages(UserId(userId)).map {
       os => ( Ok(Json.toJson(os)))
+    }
+  }
+
+  def saveMessage() = Action.async(parse.json[JsObject]) { implicit request =>
+
+    messages.createMessage(request.body).map {
+      case MessageId(0) => NotFound
+      case _ => NoContent
     }
   }
 }

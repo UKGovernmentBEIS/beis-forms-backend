@@ -34,7 +34,7 @@ class StubApplicationOps extends ApplicationOps{
 
   override def deleteAll: Future[Unit] = ???
 
-  override def forForm(applicationFormId: ApplicationFormId): Future[Option[ApplicationRow]] = ???
+  override def forForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = ???
 
   override def application(applicationId: ApplicationId): Future[Option[Application]] = ???
 
@@ -53,4 +53,11 @@ class StubApplicationOps extends ApplicationOps{
   override def clearSectionCompletedDate(id: SubmittedApplicationRef, sectionNumber: Int): Future[Int] = ???
 
   override def updatePersonalReference(id: SubmittedApplicationRef, reference: Option[String]) = ???
+
+  override def createForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = ???
+
+  def userApplications(userId: Option[UserId]): Future[Set[Application]] = ???
+
+  def saveFileSection(id: ApplicationId, sectionNumber: Int, answers: JsObject, completedAt: Option[DateTime] = None): Future[Int] = ???
+
 }

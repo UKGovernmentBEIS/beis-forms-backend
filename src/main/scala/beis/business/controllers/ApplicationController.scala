@@ -28,7 +28,7 @@ import play.api.mvc.{Action, Controller}
 import beis.business.Config
 import beis.business.actions.ApplicationAction
 import beis.business.data.{ApplicationFormOps, ApplicationOps, OpportunityOps}
-import beis.business.models.{ApplicationFormId, ApplicationId, SubmittedApplicationRef, UserId}
+import beis.business.models._
 import beis.business.notifications.NotificationService
 import beis.business.restmodels.ApplicationDetail
 
@@ -101,7 +101,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
   def submit(id: ApplicationId) = ApplicationAction(id).async { request =>
     val f = for {
       submissionRef <- OptionT(applications.submit(id))
-      _ <- OptionT.liftF(sendSubmissionNotifications(submissionRef))
+      //_ <- OptionT.liftF(sendSubmissionNotifications(submissionRef))
     } yield submissionRef
 
 
@@ -137,4 +137,26 @@ class ApplicationController @Inject()(applications: ApplicationOps,
       case _ => NoContent
     }
   }
+
+  def saveAppStatus(id: ApplicationId) = Action.async(parse.json[JsString]) { implicit request =>
+    val newVal = request.body.as[String] match {
+      case "" => None
+      case s => Some(s)
+    }
+    applications.updateAppStatus(id, newVal).map {
+      case 0 => NotFound
+      case _ => NoContent
+    }
+  }
+
+//  def saveAppMessage(id: ApplicationId) = Action.async(parse.json[JsString]) { implicit request =>
+//    val newVal = request.body.as[String] match {
+//      case "" => None
+//      case s => Some(s)
+//    }
+//    applications.saveAppMessage(id, newVal).map {
+//      case 0 => NotFound
+//      case _ => NoContent
+//    }
+//  }
 }

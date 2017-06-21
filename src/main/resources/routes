@@ -25,6 +25,8 @@ GET           /application/:id/detail                                beis.busine
 POST          /application/:id/personal-ref                          beis.business.controllers.ApplicationController.savePersonalRef(id: ApplicationId)
 GET           /message/:id/messageboard                              beis.business.controllers.MessageBoardController.byId(id: MessageId)
 GET           /messageboard                                          beis.business.controllers.MessageBoardController.userMessages
+POST          /message/messageboard                                  beis.business.controllers.MessageBoardController.saveMessage
+
 DELETE        /application/:id                                       beis.business.controllers.ApplicationController.delete(id: ApplicationId)
 DELETE        /application                                           beis.business.controllers.ApplicationController.deleteAll
 
@@ -42,6 +44,10 @@ GET           /application/:id/section/:num/item/:itemNum            beis.busine
 PUT           /application/:id/section/:num/item/:itemNum            beis.business.controllers.ItemController.put(id: ApplicationId, num:Int, itemNum:Int)
 DELETE        /application/:id/section/:num/item/:itemNum            beis.business.controllers.ItemController.delete(id: ApplicationId, num:Int, itemNum:Int)
 POST          /application/:id/section/:num/fileitems                beis.business.controllers.ItemController.postFileItem(id: ApplicationId, num:Int)
+
+POST          /application/:id/appstatus                             beis.business.controllers.ApplicationController.saveAppStatus(id: ApplicationId)
+
+
 
 # Submit application
 POST          /application/:id/submit                                beis.business.controllers.ApplicationController.submit(id: ApplicationId)

@@ -17,8 +17,14 @@
 
 package beis.business
 
+
+import eu.timepit.refined.api.Refined
+import eu.timepit.refined.collection.NonEmpty
+import eu.timepit.refined.numeric.{NonNegative, Positive}
+
 package object models {
   type SubmittedApplicationRef = ApplicationId
+  type LongId = Long Refined Positive
 
   final val APP_TITLE_SECTION_NO = 1
   final val APP_REVIEW_TIME_DAYS  = 28

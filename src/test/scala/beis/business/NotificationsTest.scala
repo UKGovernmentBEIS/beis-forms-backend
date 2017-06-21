@@ -39,7 +39,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
     "return no notification ID for a missing application ID" in {
       val notification = new NotificationServicePlayImpl(new DummyMailer(""), new DummyGatherDetailsAndSect(Future.successful(None), Future.successful(None)), oppNotFoundOps)
 
-      val res1 = notification.notifyPortfolioManager(dummyAppId, "from", "to")
+      val res1 = notification.notifyManagerAppSubmitted(dummyAppId, "from", "to")
       res1.futureValue shouldBe None
 
       val res2 = notification.notifyApplicant(dummyAppId, DateTime.now(DateTimeZone.UTC), "from", "to", "mgr@")
@@ -48,7 +48,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
 
     "return no notification ID for a missing opportunity ID" in {
       val notification = new NotificationServicePlayImpl(new DummyMailer(""), new DummyGatherDetailsAndSect(Future.successful(None), Future.successful(None)), oppNotFoundOps)
-      val res1 = notification.notifyManager(OpportunityId(123), "from", "to")
+      val res1 = notification.notifyManagerAppPublished(OpportunityId(123), "from", "to")
       res1.futureValue shouldBe None
     }
 
@@ -65,7 +65,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
       val sender = new DummyMailer(MAIL_ID)
 
       val notificationMgr = new NotificationServicePlayImpl(sender, appOps, oppNotFoundOps)
-      val res1 = notificationMgr.notifyPortfolioManager(dummyAppId, "from", "to")
+      val res1 = notificationMgr.notifyManagerAppSubmitted(dummyAppId, "from", "to")
       res1.futureValue.value.id shouldBe MAIL_ID
 
       val notificationAppl = new NotificationServicePlayImpl(sender, appOpsAndSection, oppNotFoundOps)
@@ -73,7 +73,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
       res2.futureValue.value.id shouldBe MAIL_ID
 
       val oppNotify = new NotificationServicePlayImpl(sender, appOps, oppOps)
-      val res3 = oppNotify.notifyManager(dummyOppId, "from@", "to@")
+      val res3 = oppNotify.notifyManagerAppPublished(dummyOppId, "from@", "to@")
       res3.futureValue.value.id shouldBe MAIL_ID
     }
 
@@ -81,7 +81,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
       val sender = new DummyMailer(throw new RuntimeException())
 
       val notificationMgr = new NotificationServicePlayImpl(sender, appOps, oppNotFoundOps)
-      val res1 = notificationMgr.notifyPortfolioManager(dummyAppId, "from", "to")
+      val res1 = notificationMgr.notifyManagerAppSubmitted(dummyAppId, "from", "to")
       whenReady(res1.failed) { ex => ex shouldBe a[RuntimeException] }
 
       val notificationAppl = new NotificationServicePlayImpl(sender, appOpsAndSection, oppNotFoundOps)
@@ -89,7 +89,7 @@ class NotificationsTest extends WordSpecLike with Matchers with OptionValues wit
       whenReady(res2.failed) { ex => ex shouldBe a[RuntimeException] }
 
       val oppNotify = new NotificationServicePlayImpl(sender, appOps, oppOps)
-      val res3 = oppNotify.notifyManager(dummyOppId, "from@", "to@")
+      val res3 = oppNotify.notifyManagerAppPublished(dummyOppId, "from@", "to@")
       whenReady(res3.failed) { ex => ex shouldBe a[RuntimeException] }
     }
   }
@@ -115,7 +115,7 @@ object NotificationsTestData {
     val opp = OpportunityRow(oppId, "oz1", "", None, 0, "", None, None)
 
     val appDetails = ApplicationDetails(
-      ApplicationRow(dummyAppId, appFormId, None),
+      ApplicationRow(dummyAppId, appFormId, None, UserId("DummyUser"), AppStatus("")),
       ApplicationFormRow(appFormId, oppId), opp)
 
     val details = Future.successful(Some(appDetails))

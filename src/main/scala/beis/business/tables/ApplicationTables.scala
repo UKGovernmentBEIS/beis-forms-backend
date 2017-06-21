@@ -111,7 +111,6 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
   val applicationWithSectionsForFormC = Compiled(applicationWithSectionsForFormQ _)
 
-  //TODO:- remove UserId Hardcoded value
   private def fetch(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = {
     db.run(applicationWithSectionsForFormC(applicationFormId, userId).result).flatMap {
       case Seq() =>  Future.successful(None)
@@ -121,7 +120,6 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     }
   }
 
-
   private def buildApplicationRow(app: ApplicationRow, secs: Seq[ApplicationSectionRow]): ApplicationRow = {
     val sectionOverviews: Seq[ApplicationSection] = secs.map { s =>
       ApplicationSection(s.sectionNumber, s.answers, s.completedAt)
@@ -129,7 +127,6 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     ApplicationRow(app.id, app.applicationFormId, app.personalReference, app.userId, app.appStatus)
   }
 
-  //TODO:- remove UserId Hardcoded value
   private def create(applicationFormId: ApplicationFormId, userId: UserId): Future[Application] = {
     db.run(applicationWithSectionsForFormC(applicationFormId, userId).result).flatMap {
       case Seq() => createApplicationForForm(applicationFormId, userId).map { id => Application(id, applicationFormId, None, userId, AppStatus("In progress"), Seq()) }
@@ -224,7 +221,7 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
   def appSectionQ(id: Rep[ApplicationId], sectionNumber: Rep[Int]) = applicationSectionTable.filter(a => a.applicationId === id && a.sectionNumber === sectionNumber)
 
-  def appQ(id: Rep[ApplicationId]) = applicationTable.filter(a => a.id === id)
+  def appQ(id: Rep[ApplicationId]) = applicationTable.filter(_.id === id)
 
   lazy val appC = Compiled(appQ _)
 
@@ -241,5 +238,10 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
   override def updatePersonalReference(id: SubmittedApplicationRef, reference: Option[String]): Future[Int] = {
     db.run( applicationTable.filter(_.id === id).map(_.personalReference).update(reference) )
   }
+
+  override def updateAppStatus(id: SubmittedApplicationRef, appStatus: Option[String]): Future[Int] = {
+    db.run( applicationTable.filter(_.id === id).map(_.appStatus).update(AppStatus(appStatus.get)) )
+  }
+
 }
 

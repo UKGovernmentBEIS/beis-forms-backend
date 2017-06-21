@@ -11,7 +11,7 @@ insert into application_form_question values (5,5,'contactDetails', 'What are th
 insert into application_form_question values (6,6,'accessNeeds', 'Do you have any access needs that we should be aware of?', 'Access Needs', 'Access Needs help_text');
 insert into application_form_question values (7,7,'fundsReceived', 'Has your organisation received funding through BESN previously?', ' Funds Received', 'Funds Received help_text');
 
-ALTER TABLE "application" ADD COLUMN "user_id" VARCHAR(50) NOT NULL, ADD COLUMN "status" VARCHAR(20) NOT NULL;
+ALTER TABLE "application" ADD COLUMN "user_id" VARCHAR(50) NOT NULL, ADD COLUMN "status" VARCHAR(30) NOT NULL;
 update "application" set "user_id" = 'testuser', status= 'In progress' where id = 1;
 
 update "application_form_section" set "fields" = '[{"name":"companyInfo","isEnabled":true,"isMandatory":true,"maxWords":20,"isNumeric":false,"type":"companyInfo"}]' where id = 1;
@@ -22,6 +22,10 @@ update "application_form_section" set "fields" = '[{"contactitems":[{"name":"con
 update "application_form_section" set "fields" = '[{"maxWords":500,"isEnabled":true,"type":"textArea","name":"accessNeeds","isMandatory":true}]' where id = 6;
 update "application_form_section" set "fields" = '[{"maxWords":500,"isEnabled":true,"type":"textArea","name":"fundsReceived","isMandatory":true}]' where id = 7;
 
+create table "messageboard" ("id" BIGINT NOT NULL PRIMARY KEY,"user_id" VARCHAR(50) NOT NULL, "application_id" BIGINT NOT NULL, "section_number" INTEGER, "sent_by" VARCHAR(50), "sent_at_dtime" timestamptz, "message" VARCHAR(500));
+CREATE SEQUENCE messageboard_id_seq START WITH 1;
+ALTER TABLE "messageboard" ALTER column "id" SET DEFAULT NEXTVAL('messageboard_id_seq');
+
 
 # -- !Downs
 
@@ -31,3 +35,4 @@ delete from application_form_question;
 delete from application_form_section;
 
 UPDATE "application" set "user_id" = null;
+drop table "messageboard";

@@ -15,21 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package beis.business.data
+package beis.business.models
 
-import beis.business.models._
-import beis.business.tables.MessageBoardTables
-import com.google.inject.ImplementedBy
-
-import scala.concurrent.Future
-import play.api.libs.json.{JsObject, JsValue}
-
-@ImplementedBy(classOf[MessageBoardTables])
-trait MessageBoardOps {
-
-  def byId(id: MessageId): Future[Option[MessageRow]]
-  def userMessages(userId:UserId): Future[Set[MessageRow]]
-  def updateMessage(id: ApplicationId, message: Option[String]): Future[Int]
-  def createMessage(jmsg: JsValue): Future[MessageId]
-  def deleteAll: Future[Unit]
-}
+/**
+  * Created by venkatamutyala on 05/06/2017.
+  */
+case class Process (id: ProcessId)
+case class ProcessDefinition (processDefinitionId: ProcessDefinitionId, businessKey: BusinessKey, returnVariables: Boolean,
+                              variables: Seq[ProcessVariable])
+case class ProcessInstance (id: ProcessInstanceId)
+case class ProcessId(id: LongId)
+case class ProcessInstanceId(id: String)
+case class ProcessDefinitionId(id: String)
+case class ProcessTaskId(id: String)
+case class BusinessKey(id: String)
+case class ProcessVariable(name: String, value: String )

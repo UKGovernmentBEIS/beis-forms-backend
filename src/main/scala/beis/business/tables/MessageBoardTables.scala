@@ -19,12 +19,16 @@ package beis.business.tables
 
 import javax.inject.Inject
 
-import beis.business.data.MessageBoardOps
+import beis.business.data.{ApplicationDetails, MessageBoardOps}
 import beis.business.models._
 import beis.business.restmodels.{Application, Message}
 import beis.business.slicks.modules._
 import beis.business.slicks.support.DBBinding
+import com.fasterxml.jackson.core.JsonParseException
+import org.joda.time.{DateTime, DateTimeZone}
+import play.api.data.validation.ValidationError
 import play.api.db.slick.DatabaseConfigProvider
+import play.api.libs.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,18 +38,46 @@ class MessageBoardTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)
     with DBBinding
     with PgSupport {
 
+
+//    implicit val messageRowReads = Json.reads[MessageRow]
+//  implicit val messageRowFormat = Json.format[MessageRow]
+  implicit val messageIdReads = Json.format[MessageId]
+  implicit val appIdReads = Json.format[ApplicationId]
+  implicit val userIdReads = Json.format[UserId]
+  //implicit val messageReads = Json.reads[Message]
+  implicit val messageFormat = Json.format[Message]
   import api._
 
   override def byId(id: MessageId): Future[Option[MessageRow]] = db.run(messageBoardTable.filter(_.id === id).result).map { os =>
     os.map(m => MessageRow(m.id, m.userId, m.applicationId, m.sectionNumber, m.sentBy, m.sentAt, m.message)).headOption
   }
+
   override def userMessages(userId: UserId): Future[Set[MessageRow]] = db.run(messageBoardTable.filter(_.userId === userId).result).map { os =>
     os.map(m => {
-      val msg = m.message match {
-        case ms => if(ms.get.charAt(20) != -1) ms.get.substring(0, 20) else ms.get
-        case None => "No Message"
-      }
-      MessageRow(m.id, m.userId, m.applicationId, m.sectionNumber, m.sentBy, m.sentAt, Option(msg + " . . ."))
+      val ms: String = m.message.getOrElse("No Message")
+      val msg = if(ms.length > 15) ms.substring(0, 15) else ms
+      MessageRow(m.id, None, None, None, m.sentBy, m.sentAt, Option(msg + " . . ."))
     }).toSet
   }
+
+  override def updateMessage(id: SubmittedApplicationRef, message: Option[String]): Future[Int] = {
+    db.run( messageBoardTable.filter(_.applicationId === id).map(_.message).update(message) )
+  }
+
+  override def createMessage(jmsg: JsValue): Future[MessageId] = db.run {
+    jmsg.validate[Message] match {
+      case JsSuccess(a, _) =>
+        (messageBoardTable returning messageBoardTable.map(_.id)) += MessageRow(MessageId(0), Option(a.userId), Option(a.applicationId),
+          Option(a.sectionNumber), a.sentBy, DateTime.now(DateTimeZone.UTC), a.message )
+        case JsError(errs) => throw JsonParseException("createMessage", errs)
+    }
+  }
+
+  override def deleteAll: Future[Unit] = db.run {
+    for {
+      _ <- messageBoardTable.delete
+    } yield ()
+  }
+
 }
+case class JsonParseException(method: String, errs: Seq[(JsPath, Seq[ValidationError])]) extends Exception
