@@ -73,6 +73,13 @@ class MessageBoardTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)
     }
   }
 
+
+    override def delete(id: MessageId): Future[Unit] = db.run {
+    for {
+      _ <- messageBoardTable.filter(_.id === id).delete
+    } yield ()
+  }
+
   override def deleteAll: Future[Unit] = db.run {
     for {
       _ <- messageBoardTable.delete

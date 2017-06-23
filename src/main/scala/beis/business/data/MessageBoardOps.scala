@@ -31,5 +31,6 @@ trait MessageBoardOps {
   def userMessages(userId:UserId): Future[Set[MessageRow]]
   def updateMessage(id: ApplicationId, message: Option[String]): Future[Int]
   def createMessage(jmsg: JsValue): Future[MessageId]
+  def delete(id: MessageId) : Future[Unit]
   def deleteAll: Future[Unit]
 }

@@ -101,7 +101,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
   def submit(id: ApplicationId) = ApplicationAction(id).async { request =>
     val f = for {
       submissionRef <- OptionT(applications.submit(id))
-      //_ <- OptionT.liftF(sendSubmissionNotifications(submissionRef))
+      _ <- OptionT.liftF(sendSubmissionNotifications(submissionRef))
     } yield submissionRef
 
 

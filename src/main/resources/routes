@@ -26,6 +26,7 @@ POST          /application/:id/personal-ref                          beis.busine
 GET           /message/:id/messageboard                              beis.business.controllers.MessageBoardController.byId(id: MessageId)
 GET           /messageboard                                          beis.business.controllers.MessageBoardController.userMessages
 POST          /message/messageboard                                  beis.business.controllers.MessageBoardController.saveMessage
+DELETE        /message/:id/messageboard                              beis.business.controllers.MessageBoardController.delete(id: MessageId)
 
 DELETE        /application/:id                                       beis.business.controllers.ApplicationController.delete(id: ApplicationId)
 DELETE        /application                                           beis.business.controllers.ApplicationController.deleteAll

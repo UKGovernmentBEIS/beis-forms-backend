@@ -47,4 +47,8 @@ class MessageBoardController @Inject()(messages:MessageBoardOps)
       case _ => NoContent
     }
   }
+
+  def delete(id: MessageId) = Action.async { implicit request =>
+    messages.delete(id).map(_ => NoContent)
+  }
 }
