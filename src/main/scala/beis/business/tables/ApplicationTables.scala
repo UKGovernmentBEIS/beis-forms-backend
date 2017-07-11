@@ -243,5 +243,18 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     db.run( applicationTable.filter(_.id === id).map(_.appStatus).update(AppStatus(appStatus.get)) )
   }
 
+  override def createSimpleForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]] = {
+    val appFormF = db.run(applicationFormTable.filter(_.id === applicationFormId).result.headOption)
+
+    for {
+      _ <- OptionT(appFormF)
+      app <- OptionT.liftF(createSimple(applicationFormId, userId))
+    } yield ApplicationRow(app.id, app.applicationFormId, app.personalReference, app.userId, app.appStatus)
+  }.value
+
+  private def createSimple(applicationFormId: ApplicationFormId, userId: UserId): Future[Application] = {
+      createApplicationForForm(applicationFormId, userId).map { id => Application(id, applicationFormId, None, userId, AppStatus("In progress"), Seq()) }
+  }
+
 }
 

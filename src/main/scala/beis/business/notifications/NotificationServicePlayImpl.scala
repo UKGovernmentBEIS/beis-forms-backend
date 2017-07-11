@@ -147,4 +147,10 @@ class NotificationServicePlayImpl @Inject()(sender: MailerClient, applications: 
       _.map(opp => EmailId(sender.send( createEmail(opp) )))
     }
   }
+
+  def notifyManagerSimpleFormSubmitted(applicationFormId: ApplicationId, from: String, to: String): Future[Option[NotificationId]] ={
+    ???
+  }
+
+
 }

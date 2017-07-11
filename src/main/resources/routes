@@ -56,6 +56,15 @@ POST          /application/:id/submit                                beis.busine
 # utility endpoints for testing
 POST          /reset                                                 beis.business.controllers.UtilityController.reset()
 
+
+###########################
+#BEIS Simple Apps
+GET           /simple_application_form/:id/simpleappcreate           beis.business.controllers.SimpleAppsController.applicationForFormCreate(id: ApplicationFormId)
+POST          /application/:id/submitsimpleform                      beis.business.controllers.SimpleAppsController.submit(id: ApplicationId)
+
+
+
+###########################
 # Health check
 GET           /ping                                                  beis.business.controllers.HealthCheckController.ping()
 GET           /version                                               beis.business.controllers.HealthCheckController.version()

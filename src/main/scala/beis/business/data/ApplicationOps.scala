@@ -79,4 +79,7 @@ trait ApplicationOps {
   def updatePersonalReference(id: ApplicationId, reference: Option[String]): Future[Int]
 
   def updateAppStatus(id: ApplicationId, appStatus: Option[String]): Future[Int]
+
+  def createSimpleForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]]
+
 }

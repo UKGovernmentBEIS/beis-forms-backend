@@ -9,19 +9,19 @@ update "opportunity" set "published_at_dtime" = '2016-11-28 00:00:00' where id =
 
 ALTER TABLE "application_section" ALTER COLUMN "completed_at_dt" TYPE TIMESTAMPTZ;
 
-CREATE SEQUENCE opportunity_id_seq START WITH 2;
+CREATE SEQUENCE opportunity_id_seq START WITH 3;
 ALTER TABLE "opportunity" ALTER column "id" SET DEFAULT NEXTVAL('opportunity_id_seq');
 
-CREATE SEQUENCE section_id_seq START WITH 4;
+CREATE SEQUENCE section_id_seq START WITH 7;
 ALTER TABLE "section" ALTER column "id" SET DEFAULT NEXTVAL('section_id_seq');
 
-CREATE SEQUENCE applicationform_id_seq START WITH 2;
+CREATE SEQUENCE applicationform_id_seq START WITH 3;
 ALTER TABLE "application_form" ALTER column "id" SET DEFAULT NEXTVAL('applicationform_id_seq');
 
-CREATE SEQUENCE applicationformsection_id_seq START WITH 8;
+CREATE SEQUENCE applicationformsection_id_seq START WITH 11;
 ALTER TABLE "application_form_section" ALTER column "id" SET DEFAULT NEXTVAL('applicationformsection_id_seq');
 
-CREATE SEQUENCE applicationformquestion_id_seq START WITH 8;
+CREATE SEQUENCE applicationformquestion_id_seq START WITH 11;
 ALTER TABLE "application_form_question" ALTER column "id" SET DEFAULT NEXTVAL('applicationformquestion_id_seq');
 
 # --- !Downs
