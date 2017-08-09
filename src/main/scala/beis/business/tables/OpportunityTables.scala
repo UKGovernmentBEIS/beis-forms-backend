@@ -132,8 +132,8 @@ class OpportunityTables @Inject()(val dbConfigProvider: DatabaseConfigProvider, 
 
   override def reset(): Future[Unit] = {
     val action = for {
-      _ <- opportunityTable.filter(_.id > OpportunityId(1)).delete
-      _ <- sqlu"alter sequence opportunity_id_seq restart with 2"
+      _ <- opportunityTable.filter(_.id > OpportunityId(2)).delete
+      _ <- sqlu"alter sequence opportunity_id_seq restart with 3"
     } yield ()
 
     db.run(action.transactionally)
